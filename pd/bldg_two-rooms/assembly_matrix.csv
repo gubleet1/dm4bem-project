@@ -1,0 +1,4 @@
+TC0,node0,TC1,node1
+window-out,-1,wall-A,-1
+window-out,-1,window-in,0
+window-in,-1,wall-B,-1
