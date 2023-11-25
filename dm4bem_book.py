@@ -926,7 +926,7 @@ def file2TC(TC_file, name="w_", auto_number=False):
     return TC
 
 
-def bldg2TCd(folder_path, TC_auto_number):
+def bldg2TCd(folder_path, TC_auto_number=True, TC_prefix=True):
     """
     Created on Tue Jun 20 19:56:31 2023
 
@@ -1010,19 +1010,19 @@ def bldg2TCd(folder_path, TC_auto_number):
     file_path = os.path.join(folder_path, "walls_generic.csv")
     if os.path.isfile(file_path):
         walls = pd.read_csv(file_path)
-        TCd_generic = wall2TC(wall_types, walls, prefix="g")
+        TCd_generic = wall2TC(wall_types, walls, prefix="g" if TC_prefix else "")
         TCd.update(TCd_generic)
 
     file_path = os.path.join(folder_path, "walls_in.csv")
     if os.path.isfile(file_path):
         walls = pd.read_csv(file_path)
-        TCd_in = wall2TC(wall_types, walls, prefix="i")
+        TCd_in = wall2TC(wall_types, walls, prefix="i" if TC_prefix else "")
         TCd.update(TCd_in)
 
     file_path = os.path.join(folder_path, "walls_out.csv")
     if os.path.isfile(file_path):
         walls = pd.read_csv(file_path)
-        TCd_out = wall2TC(wall_types, walls, prefix="o")
+        TCd_out = wall2TC(wall_types, walls, prefix="o" if TC_prefix else "")
         TCd.update(TCd_out)
 
     # Read all files from folder with data on building
@@ -1033,7 +1033,7 @@ def bldg2TCd(folder_path, TC_auto_number):
 
     # Thermal circuits from files of thermal circuit
     for k in range(len(TC_files)):
-        name = "c" + str(k)
+        name = ("c" if TC_prefix else "") + str(k)
         TCd[name] = file2TC(TC_files[k], name, TC_auto_number)
 
     return TCd
@@ -1536,6 +1536,15 @@ def print_TC(TC):
     print(TC['f'], '\n')
     print('y:')
     print(TC['y'], '\n')
+
+
+def print_TCd(TCd):
+    print('{')
+    for TC_id, TC in TCd.items():
+        print(f'{TC_id}: {{')
+        print_TC(TC)
+        print('}')
+    print('}')
 
 
 def round_time(dtmax):
